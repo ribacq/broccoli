@@ -11,7 +11,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-const sectionCount = 60
+const sectionCount = 42
 const bridgesCount = sectionCount / 5
 
 // Section of the interactive story
@@ -75,6 +75,8 @@ func main() {
 			n := rand.Intn(len(sections))
 			sections[n].MaxExits++
 			sections[n].Exits = append(sections[n].Exits, sec)
+			sec.Depth = sections[n].Depth + 1
+			sec.Parent = sections[n]
 			sections = append(sections, sec)
 		}
 	}
@@ -90,6 +92,9 @@ func main() {
 			bridge = sections[rand.Intn(len(sections))]
 		}
 		sec.Exits = append(sec.Exits, bridge)
+		if bridge.Depth < sec.Depth+1 {
+			bridge.Depth = sec.Depth + 1
+		}
 	}
 
 	fmt.Println("digraph sections {\nnode [style=filled]\n0 [color=green]")
